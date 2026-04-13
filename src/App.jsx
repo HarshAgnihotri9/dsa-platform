@@ -6,6 +6,9 @@ import ProblemDetail from "./pages/ProblemDetail";
 import Navbar from "./components/Navbar";
 import Dashboard from "./pages/Dashboard";
 import CreateProblem from "./pages/CreateProblem";
+import ProtectedRoute from "./utils/ProtectedRoute";
+import Login from "./pages/Login";
+import Register from "./pages/Register";
 
 function App() {
   return (
@@ -13,10 +16,14 @@ function App() {
       <Navbar />
       <Routes>
         <Route path="/" element={<Home />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/signup" element={<Register />} />
         <Route path="/topics" element={<Topics />} />
         <Route path="/topics/:topicId" element={<ProblemList />} />
         <Route path="/problem/:problemId" element={<ProblemDetail />} />
-        <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/dashboard" element={   <ProtectedRoute>
+      <Dashboard />
+    </ProtectedRoute>} />
         <Route path="/create-problem" element={<CreateProblem />} />
 
       </Routes>

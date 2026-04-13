@@ -6,19 +6,33 @@ export default function Dashboard() {
   const [data, setData] = useState(null);
 
   // 🔥 Fetch dashboard data
-  useEffect(() => {
-    const fetchDashboard = async () => {
-      try {
-        const res = await fetch("http://localhost:8080/api/dashboard");
-        const json = await res.json();
-        setData(json.data);
-      } catch (err) {
-        console.error(err);
-      }
-    };
+useEffect(() => {
+  const fetchDashboard = async () => {
+    try {
+      const token = localStorage.getItem("token");
 
-    fetchDashboard();
-  }, []);
+      const res = await fetch("http://localhost:8080/api/dashboard", {
+        headers: {
+          Authorization: token, // 🔥 send token
+        },
+      });
+
+      const json = await res.json();
+
+      if (!json.success) {
+        console.error("API Error:", json);
+        return;
+      }
+
+      setData(json.data);
+
+    } catch (err) {
+      console.error("Fetch error:", err);
+    }
+  };
+
+  fetchDashboard();
+}, []);
 
   if (!data) {
     return (

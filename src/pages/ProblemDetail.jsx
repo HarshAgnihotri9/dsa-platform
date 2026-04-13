@@ -41,14 +41,15 @@ const runCode = async () => {
       slug: problem.slug,
       code: userCode,
     });
+    // console.log(data);
+    
 
-    if (!data.success) {
-      setResults([]);
-      setResult("fail");
-      setError(data.message); // 🔥 NEW
-      return;
-    }
-
+  if (!data.success) {
+  setResults(data.results || []); // 🔥 KEEP RESULTS
+  setResult("fail");
+  setError(data.message || "");
+  return;
+}
     setResults(data.results || []);
     setResult(data.success ? "pass" : "fail");
     setError("");
@@ -162,71 +163,78 @@ const runCode = async () => {
   </div>
 )}
         {/* Output */}
-        <div className="px-3 mt-4 pb-4">
-          <h3 className="text-sm text-gray-400 mb-1">Output</h3>
+      {/* RESULT PANEL */}
+<div className="px-3 mt-4 pb-4">
 
-          <div className="bg-black text-green-400 p-3 rounded text-sm min-h-[80px] border border-gray-800">
-          <div className="px-3 mt-4 pb-4">
   <h3 className="text-sm text-gray-400 mb-2">Results</h3>
 
-  <div className="space-y-3 max-h-[200px] overflow-y-auto">
+  <div className="bg-black p-3 rounded text-sm border border-gray-800 min-h-[120px]">
 
+    {/* EMPTY STATE */}
     {(results || []).length === 0 && (
       <div className="text-gray-500 text-sm">
         Run your code to see results
       </div>
     )}
 
-    {results.map((res, i) => (
-      <div
-        key={i}
-        className={`p-3 rounded border ${
-          res.passed
-            ? "border-green-600 bg-green-900/20"
-            : "border-red-600 bg-red-900/20"
-        }`}
-      >
+    {/* RESULTS LIST */}
+    <div className="space-y-3 max-h-[250px] overflow-y-auto">
 
-        {/* Header */}
-        <div className="flex justify-between mb-2">
-          <span className="text-xs text-gray-400">
-            Case {i + 1}
-          </span>
+      {(results || []).map((res, i) => (
+        <div
+          key={i}
+          className={`p-3 rounded border ${
+            res.passed
+              ? "border-green-600 bg-green-900/20"
+              : "border-red-600 bg-red-900/20"
+          }`}
+        >
 
-          <span className={`text-xs ${
-            res.passed ? "text-green-400" : "text-red-400"
-          }`}>
-            {res.passed ? "✔ Passed" : "❌ Failed"}
-          </span>
+          {/* HEADER */}
+          <div className="flex justify-between mb-2">
+            <span className="text-xs text-gray-400">
+              Case {i + 1}
+            </span>
+
+            <span className={`text-xs ${
+              res.passed ? "text-green-400" : "text-red-400"
+            }`}>
+              {res.passed ? "✔ Passed" : "❌ Failed"}
+            </span>
+          </div>
+
+          {/* INPUT */}
+          <div className="text-xs mb-1">
+            <span className="text-gray-400">Input: </span>
+            {res.input ? JSON.stringify(res.input) : "No input"}
+          </div>
+
+          {/* EXPECTED */}
+          <div className="text-xs mb-1">
+            <span className="text-gray-400">Expected: </span>
+            <span className="text-green-400">
+              {res.expected ? JSON.stringify(res.expected) : "No expected"}
+            </span>
+          </div>
+
+          {/* OUTPUT */}
+          <div className="text-xs">
+            <span className="text-gray-400">Output: </span>
+            <span className={!res.passed ? "text-red-400" : ""}>
+              {res.output !== undefined
+                ? Number.isNaN(res.output)
+                  ? "NaN"
+                  : JSON.stringify(res.output)
+                : "No output"}
+            </span>
+          </div>
+
         </div>
+      ))}
 
-        {/* Input */}
-        <div className="text-xs mb-1">
-          <span className="text-gray-400">Input: </span>
-          {JSON.stringify(res.input)}
-        </div>
-
-        {/* Expected */}
-        <div className="text-xs mb-1">
-          <span className="text-gray-400">Expected: </span>
-          {JSON.stringify(res.expected)}
-        </div>
-
-        {/* Output */}
-        <div className="text-xs">
-          <span className="text-gray-400">Output: </span>
-         {Number.isNaN(res.output)
-  ? "NaN"
-  : JSON.stringify(res.output)}
-        </div>
-
-      </div>
-    ))}
-
+    </div>
   </div>
 </div>
-          </div>
-        </div>
 
         {/* Test Cases */}
         <div className="px-3 pb-4">

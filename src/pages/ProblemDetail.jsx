@@ -37,10 +37,13 @@ const [error, setError] = useState("");
   // 🔥 RUN CODE USING BACKEND
 const runCode = async () => {
   try {
+    
     const data = await runCodeApi({
       slug: problem.slug,
       code: userCode,
     });
+    console.log(data);
+    
     // console.log(data);
     
 

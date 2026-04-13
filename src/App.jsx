@@ -5,6 +5,7 @@ import ProblemList from "./pages/ProblemList";
 import ProblemDetail from "./pages/ProblemDetail";
 import Navbar from "./components/Navbar";
 import Dashboard from "./pages/Dashboard";
+import CreateProblem from "./pages/CreateProblem";
 
 function App() {
   return (
@@ -16,6 +17,8 @@ function App() {
         <Route path="/topics/:topicId" element={<ProblemList />} />
         <Route path="/problem/:problemId" element={<ProblemDetail />} />
         <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/create-problem" element={<CreateProblem />} />
+
       </Routes>
     </Router>
   );

@@ -14,6 +14,8 @@ export default function Navbar() {
     { path: "/", label: "Explore" },
     { path: "/topics", label: "Problems" },
     { path: "/dashboard", label: "Progress" },
+    { path: "/create-problem", label: "Create-problems" },
+
   ];
 
   return (

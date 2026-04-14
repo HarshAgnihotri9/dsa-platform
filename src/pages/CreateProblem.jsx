@@ -1,6 +1,6 @@
 import { useState } from "react";
 import Editor from "@monaco-editor/react";
-import BASE_URL from '../api/problemApi'
+import {BASE_URL} from '../api/problemApi'
 
 
 export default function CreateProblem() {

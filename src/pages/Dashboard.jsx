@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { topics } from "../data/topics";
 import Courses from "./Courses";
-import BASE_URL from '../api/problemApi'
+import {BASE_URL} from '../api/problemApi'
 
 export default function Dashboard() {
   const [data, setData] = useState(null);

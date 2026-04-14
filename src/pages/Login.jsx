@@ -56,10 +56,10 @@ export default function Login() {
     <div className="min-h-screen flex bg-[#0a0a0a] text-white">
 
       {/* LEFT SIDE (Branding) */}
-      <div className="hidden md:flex w-1/2 flex-col justify-center px-16 bg-gradient-to-br from-green-500/10 to-transparent">
+      <div className="hidden md:flex w-1/2 flex-col justify-center px-16 bg-gradient-to-br from-yellow-500/10 to-transparent">
         <h1 className="text-5xl font-bold leading-tight">
           Crack DSA <br />
-          <span className="text-green-400">Like a Pro 🚀</span>
+          <span className="text-yellow-400">Like a Pro 🚀</span>
         </h1>
 
         <p className="text-gray-400 mt-6 max-w-md">
@@ -105,7 +105,7 @@ export default function Login() {
                   placeholder="you@example.com"
                   value={form.email}
                   onChange={handleChange}
-                  className="w-full mt-2 p-3 rounded-lg bg-[#1a1a1a] border border-gray-700 focus:outline-none focus:ring-2 focus:ring-green-500 transition"
+                  className="w-full mt-2 p-3 rounded-lg bg-[#1a1a1a] border border-gray-700 focus:outline-none focus:ring-2 focus:ring-yellow-500 transition"
                 />
               </div>
 
@@ -119,7 +119,7 @@ export default function Login() {
                     placeholder="••••••••"
                     value={form.password}
                     onChange={handleChange}
-                    className="w-full p-3 rounded-lg bg-[#1a1a1a] border border-gray-700 focus:outline-none focus:ring-2 focus:ring-green-500 pr-12"
+                    className="w-full p-3 rounded-lg bg-[#1a1a1a] border border-gray-700 focus:outline-none focus:ring-2 focus:ring-yellow-500 pr-12"
                   />
                   <button
                     type="button"
@@ -135,7 +135,7 @@ export default function Login() {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full py-3 rounded-lg font-semibold bg-green-500 hover:bg-green-400 text-black transition disabled:bg-gray-700 disabled:text-gray-400"
+                className="w-full py-3 rounded-lg font-semibold bg-yellow-500 hover:bg-yellow-400 text-black transition disabled:bg-gray-700 disabled:text-gray-400"
               >
                 {loading ? "Logging in..." : "Login"}
               </button>
@@ -146,7 +146,7 @@ export default function Login() {
               Don’t have an account?{" "}
               <span
                 onClick={() => navigate("/signup")}
-                className="text-green-400 cursor-pointer hover:underline"
+                className="text-yellow-400 cursor-pointer hover:underline"
               >
                 Sign up
               </span>

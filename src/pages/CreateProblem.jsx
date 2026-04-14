@@ -1,5 +1,7 @@
 import { useState } from "react";
 import Editor from "@monaco-editor/react";
+import BASE_URL from '../api/problemApi'
+
 
 export default function CreateProblem() {
   const [form, setForm] = useState({
@@ -76,7 +78,7 @@ export default function CreateProblem() {
         },
       };
 
-      const res = await fetch("http://localhost:8080/api/problems", {
+      const res = await fetch(`${BASE_URL}/api/problems`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

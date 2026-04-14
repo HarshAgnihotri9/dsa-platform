@@ -1,4 +1,9 @@
-const BASE_URL = "http://localhost:8080/api";
+// const BASE_URL = "http://localhost:8080/api";
+
+const BASE_URL = "https://backend-dsa.vercel.app/api";
+
+
+
 
 export const getProblems = async () => {
   const res = await fetch(`${BASE_URL}/problems`);

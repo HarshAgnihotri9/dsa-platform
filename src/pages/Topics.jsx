@@ -9,7 +9,7 @@ export default function Topics() {
       <div className="max-w-6xl mx-auto px-6 pt-16 pb-10 text-center">
 
         <h1 className="text-4xl md:text-5xl font-bold leading-tight">
-          Explore <span className="bg-gradient-to-r from-yellow-400 to-orange-500 bg-clip-text text-transparent">DSA Topics</span>
+          Explore <span className="bg-gradient-to-r from-yellow-400 to-orange-500 bg-clip-text text-transparent">DSA QUESTIONS</span>
         </h1>
 
         <p className="text-gray-400 mt-4 max-w-2xl mx-auto">

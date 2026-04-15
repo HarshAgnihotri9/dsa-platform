@@ -1,7 +1,7 @@
 export const topics = [
-  { id: "arrays", name: "Arrays" },
-  { id: "strings", name: "Strings" },
-  { id: "linked-list", name: "Linked List" },
+  { id: "Array", name: "Arrays" },
+  { id: "String", name: "Strings" },
+  { id: "Linked List", name: "Linked List" },
   { id: "stack", name: "Stack" },
   { id: "queue", name: "Queue" },
   { id: "hashing", name: "Hashing" },

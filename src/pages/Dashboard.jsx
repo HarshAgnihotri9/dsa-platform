@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 import { topics } from "../data/topics";
 import Courses from "./Courses";
-import {BASE_URL} from '../api/problemApi'
-
+import { BASE_URL } from "../api/problemApi";
 export default function Dashboard() {
   const [data, setData] = useState(null);
+console.log(BASE_URL);
 
   // 🔥 Fetch dashboard data
 useEffect(() => {
@@ -12,7 +12,7 @@ useEffect(() => {
     try {
       const token = localStorage.getItem("token");
 
-      const res = await fetch(`${BASE_URL}/api/dashboard`, {
+      const res = await fetch(`${BASE_URL}/dashboard`, {
         headers: {
           Authorization: token, // 🔥 send token
         },

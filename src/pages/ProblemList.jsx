@@ -18,13 +18,14 @@ export default function ProblemList() {
       </div>
     );
   }
-
-  const filteredProblems = problems.filter((p) => {
-    return (
-      p.topic === topicId &&
-      (filter === "All" || p.difficulty === filter)
-    );
-  });
+const filteredProblems = Array.isArray(problems)
+  ? problems.filter((p) => {
+      return (
+        p.topic === topicId &&
+        (filter === "All" || p.difficulty === filter)
+      );
+    })
+  : [];
 
   const difficultyColor = (level) => {
     if (level === "Easy") return "text-green-400";

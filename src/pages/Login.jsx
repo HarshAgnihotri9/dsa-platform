@@ -32,11 +32,12 @@ export default function Login() {
       setLoading(true);
       setError("");
 
-      const res = await fetch(`${BASE_URL}/api/auth/login`, {
+      const res = await fetch(`${BASE_URL}/auth/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(form),
       });
+console.log(res);
 
       const data = await res.json();
 

@@ -1,11 +1,13 @@
-// const BASE_URL = "http://localhost:8080/api";
-import {BASE_URL} from '../api/problemApi'
+import { BASE_URL } from '../api/problemApi';
 
 export const runCodeApi = async (data) => {
-  const res = await fetch(`${BASE_URL}/submission/run`, {
+  const token = localStorage.getItem("token"); // or wherever you store it
+
+  const res = await fetch(`${BASE_URL}/api/submission/run`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
+      "Authorization": `Bearer ${token}` // 🔥 important
     },
     body: JSON.stringify(data),
   });

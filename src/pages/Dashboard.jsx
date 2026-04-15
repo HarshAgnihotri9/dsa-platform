@@ -14,7 +14,7 @@ useEffect(() => {
 
       const res = await fetch(`${BASE_URL}/dashboard`, {
         headers: {
-          Authorization: token, // 🔥 send token
+            "Authorization": `Bearer ${token}`// 🔥 send token
         },
       });
 

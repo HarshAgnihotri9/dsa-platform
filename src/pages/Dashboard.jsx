@@ -1,41 +1,39 @@
 import { useEffect, useState } from "react";
-import { topics } from "../data/topics";
-import Courses from "./Courses";
 import { BASE_URL } from "../api/problemApi";
+
 export default function Dashboard() {
   const [data, setData] = useState(null);
-console.log(BASE_URL);
+  const [error, setError] = useState("");
 
-  // 🔥 Fetch dashboard data
-useEffect(() => {
-  const fetchDashboard = async () => {
-    try {
-      const token = localStorage.getItem("token");
+  useEffect(() => {
+    const fetchDashboard = async () => {
+      try {
+        const token = localStorage.getItem("token");
 
-      const res = await fetch(`${BASE_URL}/dashboard`, {
-        headers: {
-            "Authorization": `Bearer ${token}`// 🔥 send token
-        },
-      });
+        const res = await fetch(`${BASE_URL}/dashboard`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
 
-      const json = await res.json();
+        const json = await res.json();
 
-      if (!json.success) {
-        console.error("API Error:", json);
-        return;
+        if (!json.success) {
+          setError("Failed to load dashboard");
+          return;
+        }
+
+        setData(json.data);
+      } catch (err) {
+        console.error(err);
+        setError("Something went wrong");
       }
+    };
 
-      setData(json.data);
+    fetchDashboard();
+  }, []);
 
-    } catch (err) {
-      console.error("Fetch error:", err);
-    }
-  };
-
-  fetchDashboard();
-}, []);
-
-  if (!data) {
+  if (!data && !error) {
     return (
       <div className="bg-[#0b0b0b] text-white min-h-screen flex items-center justify-center">
         Loading Dashboard...
@@ -43,120 +41,136 @@ useEffect(() => {
     );
   }
 
-  const total = data.totalProblems;
-  const solvedCount = data.solvedProblems;
-  const percentage = data.progress.percentage;
+  if (error) {
+    return (
+      <div className="bg-[#0b0b0b] text-red-400 min-h-screen flex items-center justify-center">
+        {error}
+      </div>
+    );
+  }
+
 
   return (
-    <div className="bg-[#0b0b0b] text-white min-h-screen px-6 py-10">
+    <div className="bg-[#0b0b0b] text-white min-h-screen p-6">
 
-      {/* HEADER */}
-      <div className="mb-10">
-        <h1 className="text-4xl font-bold">Dashboard</h1>
-        <p className="text-gray-400 mt-2">
-          Track your DSA journey and improve daily 🚀
-        </p>
-      </div>
+      <div className="flex flex-col md:flex-row gap-6">
 
-      {/* 🔥 MAIN STATS */}
-      <div className="grid md:grid-cols-3 gap-6 mb-10">
+        {/* ================= LEFT ================= */}
+     <div className="w-full md:w-[300px] bg-[#141414] p-6 rounded-2xl border border-gray-800 shadow-lg">
 
-        <div className="bg-[#141414] border border-gray-800 rounded-xl p-6 hover:border-yellow-400 transition">
-          <p className="text-gray-400 text-sm">Solved</p>
-          <h2 className="text-3xl font-bold mt-2 text-yellow-400">
-            {solvedCount}
-          </h2>
-        </div>
+  {/* PROFILE HEADER */}
+  <div className="flex flex-col items-center text-center mb-6">
 
-        <div className="bg-[#141414] border border-gray-800 rounded-xl p-6 hover:border-yellow-400 transition">
-          <p className="text-gray-400 text-sm">Total Problems</p>
-          <h2 className="text-3xl font-bold mt-2">
-            {total}
-          </h2>
-        </div>
+    {/* AVATAR */}
+    <div className="w-16 h-16 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-full flex items-center justify-center text-black font-bold text-xl mb-3">
+      {data?.user?.name?.[0] || "U"}
+    </div>
 
-        <div className="bg-[#141414] border border-gray-800 rounded-xl p-6 hover:border-yellow-400 transition">
-          <p className="text-gray-400 text-sm">Progress</p>
-          <h2 className="text-3xl font-bold mt-2 text-green-400">
-            {percentage}%
-          </h2>
-        </div>
+    {/* NAME */}
+    <h2 className="text-lg font-semibold">
+      {data?.user?.name || "User"}
+    </h2>
 
-      </div>
+    {/* USERNAME */}
+    <p className="text-sm text-gray-400">
+      @{data?.user?.username || "username"}
+    </p>
 
-      {/* 🔥 DIFFICULTY STATS */}
-      <div className="grid md:grid-cols-3 gap-6 mb-10">
+  </div>
 
-        <div className="bg-[#141414] p-5 rounded-xl border border-gray-800">
-          <p className="text-green-400 text-sm">Easy</p>
-          <h2 className="text-2xl font-bold">
-            {data.difficulty.Easy}
-          </h2>
-        </div>
+  {/* STATS GRID */}
+  <div className="grid grid-cols-2 gap-4">
 
-        <div className="bg-[#141414] p-5 rounded-xl border border-gray-800">
-          <p className="text-yellow-400 text-sm">Medium</p>
-          <h2 className="text-2xl font-bold">
-            {data.difficulty.Medium}
-          </h2>
-        </div>
+    <StatBox label="Streak" value={data.streak} color="text-orange-400" icon="🔥" />
+    <StatBox label="Points" value={data.points} color="text-yellow-400" icon="🏆" />
+    <StatBox label="Rank" value={`#${data.rank}`} color="text-blue-400" icon="🏅" />
+    <StatBox label="Solved" value={data.solvedProblems} color="text-green-400" icon="✅" />
 
-        <div className="bg-[#141414] p-5 rounded-xl border border-gray-800">
-          <p className="text-red-400 text-sm">Hard</p>
-          <h2 className="text-2xl font-bold">
-            {data.difficulty.Hard}
-          </h2>
-        </div>
+  </div>
 
-      </div>
+</div>
 
-      {/* 🔥 PROGRESS BAR */}
-      <div className="bg-[#141414] border border-gray-800 rounded-2xl p-6 mb-12">
+        {/* ================= RIGHT ================= */}
+        <div className="flex-1">
 
-        <div className="flex justify-between mb-3">
-          <h2 className="text-lg font-semibold">Overall Completion</h2>
-          <span className="text-yellow-400 font-semibold">
-            {percentage}%
-          </span>
-        </div>
+          {/* STATS */}
+          <div className="grid md:grid-cols-4 gap-6 mb-6">
 
-        <div className="w-full bg-gray-800 h-4 rounded-full overflow-hidden">
-          <div
-            className="h-4 bg-gradient-to-r from-yellow-400 to-orange-500 transition-all"
-            style={{ width: `${percentage}%` }}
-          ></div>
-        </div>
+            <StatCard title="Solved" value={data.solvedProblems} color="text-yellow-400" />
+            <StatCard title="Total" value={data.totalProblems} />
+            <StatCard title="Progress" value={`${data.progress.percentage}%`} color="text-green-400" />
 
-        <p className="text-sm text-gray-400 mt-2">
-          {solvedCount} out of {total} problems solved
-        </p>
-      </div>
-
-      {/* 🔥 TOPIC SECTION (STATIC FOR NOW) */}
-      {/* <div>
-        <h2 className="text-2xl font-semibold mb-6">
-          Topic Breakdown
-        </h2>
-
-        <div className="grid md:grid-cols-2 gap-6">
-
-          {topics.map((topic) => (
-            <div
-              key={topic.id}
-              className="bg-[#141414] rounded-xl p-5 border border-gray-800"
-            >
-              <h3 className="font-medium">{topic.name}</h3>
-              <p className="text-sm text-gray-400 mt-2">
-                Coming soon...
-              </p>
+            <div className="bg-[#141414] border border-gray-800 rounded-xl p-6">
+              <p className="text-gray-400 text-sm">Today</p>
+              <h2 className={data.solvedToday ? "text-green-400" : "text-red-400"}>
+                {data.solvedToday ? "✅ Done" : "❌ Not Solved"}
+              </h2>
             </div>
-          ))}
+
+          </div>
+
+          {/* PROGRESS BAR */}
+          <div className="bg-[#141414] p-6 rounded-xl border border-gray-800 mb-6">
+            <div className="flex justify-between mb-4">
+              <h2>Progress</h2>
+              <span>{data.progress.percentage}%</span>
+            </div>
+
+            <div className="w-full bg-gray-800 h-4 rounded-full">
+              <div
+                className="h-4 bg-yellow-400"
+                style={{ width: `${data.progress.percentage}%` }}
+              />
+            </div>
+          </div>
+
+
+
+          {/* RECENT */}
+          <div className="bg-[#141414] p-6 rounded-xl border border-gray-800">
+
+            <h2 className="mb-4">Recent Submissions</h2>
+
+            {(data.recentSubmissions || []).length === 0 && (
+              <p className="text-gray-400 text-sm">No submissions yet</p>
+            )}
+
+            {(data.recentSubmissions || []).map((item, i) => (
+              <div key={i} className="flex justify-between bg-[#1e1e1e] p-3 rounded mb-2">
+                <span className="font-medium">{item.title}</span>
+                <span className="text-gray-400 text-sm">
+                  {new Date(item.time).toLocaleString()}
+                </span>
+              </div>
+            ))}
+
+          </div>
 
         </div>
-      </div> */}
+      </div>
+    </div>
+  );
+}
 
-      <Courses/>
+/* CARD */
+function StatCard({ title, value, color }) {
+  return (
+    <div className="bg-[#141414] p-6 rounded-xl border border-gray-800">
+      <p className="text-gray-400">{title}</p>
+      <h2 className={`text-2xl font-bold ${color || ""}`}>{value}</h2>
+    </div>
+  );
+}
 
+function StatBox({ label, value, color, icon }) {
+  return (
+    <div className="bg-[#1e1e1e] p-4 rounded-xl text-center hover:bg-[#2a2a2a] transition">
+      <p className="text-xs text-gray-400 mb-1">
+        {icon} {label}
+      </p>
+      <h3 className={`text-lg font-bold ${color}`}>
+        {value || 0}
+      </h3>
     </div>
   );
 }

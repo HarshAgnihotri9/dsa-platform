@@ -45,7 +45,7 @@ export default function ProblemDetail() {
       const token = localStorage.getItem("token");
 
       const res = await submitSolutionApi(problem._id, token);
-       setError(res.message)
+      alert(res.message)
 
     } catch (error) {
       console.log(error);

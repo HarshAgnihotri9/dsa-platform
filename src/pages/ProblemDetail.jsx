@@ -1,7 +1,7 @@
 import { useParams } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { getProblemBySlug } from "../api/problemApi";
-import { runCodeApi } from "../api/submissionApi";
+import { runCodeApi, submitSolutionApi } from "../api/submissionApi";
 import { markProblemSolved } from "../utils/storage";
 import Editor from "@monaco-editor/react";
 
@@ -17,7 +17,7 @@ export default function ProblemDetail() {
   const [userCode, setUserCode] = useState("// Write your code here\n");
   // const [output, setOutput] = useState("");
   const [results, setResults] = useState([]);
-const [error, setError] = useState("");
+  const [error, setError] = useState("");
   // 🔥 FETCH PROBLEM FROM BACKEND
   useEffect(() => {
     getProblemBySlug(problemId).then((data) => {
@@ -34,34 +34,52 @@ const [error, setError] = useState("");
     return <p className="text-white p-6">Problem not found</p>;
   }
 
+  const handleSubmit = async () => {
+    try {
+      // ❗ IMPORTANT: Only allow submit if code passed
+      if (result !== "pass") {
+        alert("❌ Please pass all test cases before submitting");
+        return;
+      }
+
+      const token = localStorage.getItem("token");
+
+      const res = await submitSolutionApi(problem._id, token);
+       setError(res.message)
+
+    } catch (error) {
+      console.log(error);
+      alert("Something went wrong");
+    }
+  };
   // 🔥 RUN CODE USING BACKEND
-const runCode = async () => {
-  try {
-    
-    const data = await runCodeApi({
-      slug: problem.slug,
-      code: userCode,
-    });
-    console.log(data);
-    
-    // console.log(data);
-    
+  const runCode = async () => {
+    try {
 
-  if (!data.success) {
-  setResults(data.results || []); // 🔥 KEEP RESULTS
-  setResult("fail");
-  setError(data.message || "");
-  return;
-}
-    setResults(data.results || []);
-    setResult(data.success ? "pass" : "fail");
-    setError("");
+      const data = await runCodeApi({
+        slug: problem.slug,
+        code: userCode,
+      });
+      console.log(data);
 
-  } catch (error) {
-    setError("Something went wrong");
-    setResult("fail");
-  }
-};
+      // console.log(data);
+
+
+      if (!data.success) {
+        setResults(data.results || []); // 🔥 KEEP RESULTS
+        setResult("fail");
+        setError(data.message || "");
+        return;
+      }
+      setResults(data.results || []);
+      setResult(data.success ? "pass" : "fail");
+      setError("");
+
+    } catch (error) {
+      setError("Something went wrong");
+      setResult("fail");
+    }
+  };
 
   return (
     <div className="bg-[#1a1a1a] text-white min-h-screen flex flex-col md:flex-row">
@@ -93,30 +111,30 @@ const runCode = async () => {
           )}
         </div>
 
-{/* Test Cases Preview (LEFT SIDE) */}
-<div className="mb-6">
-  <h2 className="text-lg font-semibold mb-3">Examples</h2>
+        {/* Test Cases Preview (LEFT SIDE) */}
+        <div className="mb-6">
+          <h2 className="text-lg font-semibold mb-3">Examples</h2>
 
-  {(problem.testCases || []).slice(0, 2).map((test, i) => (
-    <div key={i} className="bg-[#2a2a2a] p-3 rounded mb-3 border border-gray-800">
+          {(problem.testCases || []).slice(0, 2).map((test, i) => (
+            <div key={i} className="bg-[#2a2a2a] p-3 rounded mb-3 border border-gray-800">
 
-      <p className="text-xs text-gray-400 mb-1">
-        Example {i + 1}
-      </p>
+              <p className="text-xs text-gray-400 mb-1">
+                Example {i + 1}
+              </p>
 
-      <p className="text-sm mb-1">
-        <span className="text-gray-400">Input: </span>
-        {test.input}
-      </p>
+              <p className="text-sm mb-1">
+                <span className="text-gray-400">Input: </span>
+                {test.input}
+              </p>
 
-      <p className="text-sm">
-        <span className="text-gray-400">Output: </span>
-        {test.expectedOutput}
-      </p>
+              <p className="text-sm">
+                <span className="text-gray-400">Output: </span>
+                {test.expectedOutput}
+              </p>
 
-    </div>
-  ))}
-</div>
+            </div>
+          ))}
+        </div>
 
         {/* Mark solved */}
         <button
@@ -134,12 +152,21 @@ const runCode = async () => {
         <div className="flex justify-between items-center px-4 py-2 border-b border-gray-800">
           <span className="text-sm text-gray-300">JavaScript</span>
 
-          <button
-            onClick={runCode}
-            className="bg-green-600 px-3 py-1 rounded text-sm hover:bg-green-500 "
-          >
-            Run ▶
-          </button>
+          <div className="flex gap-2">
+            <button
+              onClick={runCode}
+              className="bg-green-600 px-3 py-1 rounded text-sm hover:bg-green-500"
+            >
+              Run ▶
+            </button>
+
+            <button
+              onClick={handleSubmit}
+              className="bg-blue-600 px-3 py-1 rounded text-sm hover:bg-blue-500"
+            >
+              Submit 🚀
+            </button>
+          </div>
         </div>
 
         {/* Editor */}
@@ -154,90 +181,93 @@ const runCode = async () => {
             />
           </div>
         </div>
+        {result === "submitted" && (
+          <div className="bg-blue-900/30 border border-blue-600 text-blue-400 p-3 rounded text-sm mb-3">
+            🚀 Submitted Successfully! Points Added 🔥
+          </div>
+        )}
 
         {error && (
-  <div className="bg-red-900/30 border border-red-600 text-red-400 p-3 rounded text-sm mb-3">
-    ❌ {error}
-  </div>
-)}
-{result === "fail" && (
-  <div className="bg-red-900/30 border border-red-600 text-red-400 p-2 rounded text-sm mb-2">
-    ❌ Your code did not produce the expected output
-  </div>
-)}
+          <div className="bg-red-900/30 border border-red-600 text-red-400 p-3 rounded text-sm mb-3">
+            ❌ {error}
+          </div>
+        )}
+        {result === "fail" && (
+          <div className="bg-red-900/30 border border-red-600 text-red-400 p-2 rounded text-sm mb-2">
+            ❌ Your code did not produce the expected output
+          </div>
+        )}
         {/* Output */}
-      {/* RESULT PANEL */}
-<div className="px-3 mt-4 pb-4">
+        {/* RESULT PANEL */}
+        <div className="px-3 mt-4 pb-4">
 
-  <h3 className="text-sm text-gray-400 mb-2">Results</h3>
+          <h3 className="text-sm text-gray-400 mb-2">Results</h3>
 
-  <div className="bg-black p-3 rounded text-sm border border-gray-800 min-h-[120px]">
+          <div className="bg-black p-3 rounded text-sm border border-gray-800 min-h-[120px]">
 
-    {/* EMPTY STATE */}
-    {(results || []).length === 0 && (
-      <div className="text-gray-500 text-sm">
-        Run your code to see results
-      </div>
-    )}
+            {/* EMPTY STATE */}
+            {(results || []).length === 0 && (
+              <div className="text-gray-500 text-sm">
+                Run your code to see results
+              </div>
+            )}
 
-    {/* RESULTS LIST */}
-    <div className="space-y-3 max-h-[250px] overflow-y-auto">
+            {/* RESULTS LIST */}
+            <div className="space-y-3 max-h-[250px] overflow-y-auto">
 
-      {(results || []).map((res, i) => (
-        <div
-          key={i}
-          className={`p-3 rounded border ${
-            res.passed
-              ? "border-green-600 bg-green-900/20"
-              : "border-red-600 bg-red-900/20"
-          }`}
-        >
+              {(results || []).map((res, i) => (
+                <div
+                  key={i}
+                  className={`p-3 rounded border ${res.passed
+                    ? "border-green-600 bg-green-900/20"
+                    : "border-red-600 bg-red-900/20"
+                    }`}
+                >
 
-          {/* HEADER */}
-          <div className="flex justify-between mb-2">
-            <span className="text-xs text-gray-400">
-              Case {i + 1}
-            </span>
+                  {/* HEADER */}
+                  <div className="flex justify-between mb-2">
+                    <span className="text-xs text-gray-400">
+                      Case {i + 1}
+                    </span>
 
-            <span className={`text-xs ${
-              res.passed ? "text-green-400" : "text-red-400"
-            }`}>
-              {res.passed ? "✔ Passed" : "❌ Failed"}
-            </span>
+                    <span className={`text-xs ${res.passed ? "text-green-400" : "text-red-400"
+                      }`}>
+                      {res.passed ? "✔ Passed" : "❌ Failed"}
+                    </span>
+                  </div>
+
+                  {/* INPUT */}
+                  <div className="text-xs mb-1">
+                    <span className="text-gray-400">Input: </span>
+                    {res.input ? JSON.stringify(res.input) : "No input"}
+                  </div>
+
+                  {/* EXPECTED */}
+                  <div className="text-xs mb-1">
+                    <span className="text-gray-400">Expected: </span>
+                    <span className="text-green-400">
+                      {res.expected ? JSON.stringify(res.expected) : "No expected"}
+                    </span>
+                  </div>
+
+                  {/* OUTPUT */}
+                  <div className="text-xs">
+                    <span className="text-gray-400">Output: </span>
+                    <span className={!res.passed ? "text-red-400" : ""}>
+                      {res.output !== undefined
+                        ? Number.isNaN(res.output)
+                          ? "NaN"
+                          : JSON.stringify(res.output)
+                        : "No output"}
+                    </span>
+                  </div>
+
+                </div>
+              ))}
+
+            </div>
           </div>
-
-          {/* INPUT */}
-          <div className="text-xs mb-1">
-            <span className="text-gray-400">Input: </span>
-            {res.input ? JSON.stringify(res.input) : "No input"}
-          </div>
-
-          {/* EXPECTED */}
-          <div className="text-xs mb-1">
-            <span className="text-gray-400">Expected: </span>
-            <span className="text-green-400">
-              {res.expected ? JSON.stringify(res.expected) : "No expected"}
-            </span>
-          </div>
-
-          {/* OUTPUT */}
-          <div className="text-xs">
-            <span className="text-gray-400">Output: </span>
-            <span className={!res.passed ? "text-red-400" : ""}>
-              {res.output !== undefined
-                ? Number.isNaN(res.output)
-                  ? "NaN"
-                  : JSON.stringify(res.output)
-                : "No output"}
-            </span>
-          </div>
-
         </div>
-      ))}
-
-    </div>
-  </div>
-</div>
 
         {/* Test Cases */}
         <div className="px-3 pb-4">
@@ -248,11 +278,10 @@ const runCode = async () => {
 
               {result && (
                 <span
-                  className={`text-xs px-2 py-1 rounded ${
-                    result === "pass"
-                      ? "bg-green-600"
-                      : "bg-red-600"
-                  }`}
+                  className={`text-xs px-2 py-1 rounded ${result === "pass"
+                    ? "bg-green-600"
+                    : "bg-red-600"
+                    }`}
                 >
                   {result === "pass" ? "Passed" : "Failed"}
                 </span>
@@ -264,11 +293,10 @@ const runCode = async () => {
                 <button
                   key={i}
                   onClick={() => setActiveTest(i)}
-                  className={`px-3 py-1 text-xs rounded-md ${
-                    activeTest === i
-                      ? "bg-yellow-400 text-black"
-                      : "bg-[#2a2a2a]"
-                  }`}
+                  className={`px-3 py-1 text-xs rounded-md ${activeTest === i
+                    ? "bg-yellow-400 text-black"
+                    : "bg-[#2a2a2a]"
+                    }`}
                 >
                   Case {i + 1}
                 </button>

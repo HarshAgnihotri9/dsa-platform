@@ -10,7 +10,7 @@ export default function ProblemDetail() {
 
   const [problem, setProblem] = useState(null);
   const [loading, setLoading] = useState(true);
-
+  const [running, setRunning] = useState(false);
   const [activeTest, setActiveTest] = useState(0);
   const [result, setResult] = useState(null);
   const [visibleHints, setVisibleHints] = useState(1);
@@ -22,6 +22,9 @@ export default function ProblemDetail() {
   useEffect(() => {
     getProblemBySlug(problemId).then((data) => {
       setProblem(data);
+    console.log(data);
+    setUserCode(data.starterCode.javascript)
+    
       setLoading(false);
     });
   }, [problemId]);
@@ -35,6 +38,7 @@ export default function ProblemDetail() {
   }
 
   const handleSubmit = async () => {
+    setRunning(true);
     try {
       // ❗ IMPORTANT: Only allow submit if code passed
       if (result !== "pass") {
@@ -47,10 +51,12 @@ export default function ProblemDetail() {
       const res = await submitSolutionApi(problem._id, token);
       alert(res.message)
 
+
     } catch (error) {
       console.log(error);
       alert("Something went wrong");
     }
+    setRunning(false);
   };
   // 🔥 RUN CODE USING BACKEND
   const runCode = async () => {
@@ -155,16 +161,18 @@ export default function ProblemDetail() {
           <div className="flex gap-2">
             <button
               onClick={runCode}
-              className="bg-green-600 px-3 py-1 rounded text-sm hover:bg-green-500"
+              disabled={running}
+              className={`px-3 py-1 rounded text-sm ${running ? "bg-gray-600" : "bg-green-600 hover:bg-green-500"
+                }`}
             >
-              Run ▶
+              {running ? "Running..." : "Run ▶"}
             </button>
 
             <button
               onClick={handleSubmit}
               className="bg-blue-600 px-3 py-1 rounded text-sm hover:bg-blue-500"
             >
-              Submit 🚀
+              {running ? "Submiting..." : "Submit ▶"}
             </button>
           </div>
         </div>
@@ -173,11 +181,21 @@ export default function ProblemDetail() {
         <div className="px-3 pt-3">
           <div className="h-[300px] rounded overflow-hidden border border-gray-800">
             <Editor
+              key={problem._id}
               height="100%"
               defaultLanguage="javascript"
               value={userCode}
               onChange={(value) => setUserCode(value)}
               theme="vs-dark"
+              onMount={(editor) => editor.focus()}
+              options={{
+                fontSize: 14,
+                minimap: { enabled: false },
+                wordWrap: "on",
+                automaticLayout: true,
+                undoStopAfter: true,
+                undoStopBefore: true,
+              }}
             />
           </div>
         </div>

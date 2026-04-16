@@ -3,12 +3,13 @@ import { Link, useLocation } from "react-router-dom";
 import { FiMenu, FiX, FiSearch } from "react-icons/fi";
 import { FaCrown } from "react-icons/fa";
 import { useAuth } from "../context/AuthContext";
+import SearchBar from "./SearchBar";
 
 export default function Navbar() {
   const [open, setOpen] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
   const [showPricing, setShowPricing] = useState(false);
-const { user, logoutUser } = useAuth();
+  const { user, logoutUser } = useAuth();
   const location = useLocation();
 
   const navItems = [
@@ -27,7 +28,7 @@ const { user, logoutUser } = useAuth();
           {/* LEFT */}
           <div className="flex items-center space-x-6">
             <h1 className="text-lg font-bold text-yellow-400 cursor-pointer">
-              DSA<span className="text-white">Code</span>
+              DSA<span className="text-white">Champs</span>
             </h1>
 
             {/* Desktop Nav */}
@@ -36,11 +37,10 @@ const { user, logoutUser } = useAuth();
                 <Link
                   key={item.path}
                   to={item.path}
-                  className={`text-sm transition ${
-                    location.pathname === item.path
+                  className={`text-sm transition ${location.pathname === item.path
                       ? "text-white border-b-2 border-yellow-400 pb-1"
                       : "text-gray-400 hover:text-white"
-                  }`}
+                    }`}
                 >
                   {item.label}
                 </Link>
@@ -49,82 +49,77 @@ const { user, logoutUser } = useAuth();
           </div>
 
           {/* CENTER: Search */}
-          <div className="hidden md:flex items-center bg-[#2a2a2a] px-3 py-1 rounded-lg w-64">
-            <FiSearch className="text-gray-400 mr-2" />
-            <input
-              type="text"
-              placeholder="Search problems..."
-              className="bg-transparent outline-none text-sm w-full text-white"
-            />
-          </div>
+       <div className="hidden md:flex">
+  <SearchBar />
+</div>
 
           {/* RIGHT */}
-        {/* RIGHT */}
-<div className="hidden md:flex items-center space-x-4 relative">
+          {/* RIGHT */}
+          <div className="hidden md:flex items-center space-x-4 relative">
 
-  {/* 👑 Premium */}
-  <button
-    onClick={() => setShowPricing(true)}
-    className="flex items-center gap-2 bg-yellow-400 text-black px-3 py-1 rounded-lg text-sm font-medium hover:bg-yellow-300 transition"
-  >
-    <FaCrown />
-    Premium
-  </button>
+            {/* 👑 Premium */}
+            <button
+              onClick={() => setShowPricing(true)}
+              className="flex items-center gap-2 bg-yellow-400 text-black px-3 py-1 rounded-lg text-sm font-medium hover:bg-yellow-300 transition"
+            >
+              <FaCrown />
+              Premium
+            </button>
 
-  {/* 🔥 AUTH LOGIC */}
-  {user ? (
-    <>
-      {/* PROFILE */}
-      <div
-        onClick={() => setProfileOpen(!profileOpen)}
-        className="flex items-center space-x-3 cursor-pointer hover:bg-[#2a2a2a] px-2 py-1 rounded-lg transition"
-      >
-        <img
-          src="https://i.pravatar.cc/40"
-          alt="profile"
-          className="w-8 h-8 rounded-full border border-gray-600"
-        />
-        <span className="text-sm font-medium">{user.name}</span>
-      </div>
+            {/* 🔥 AUTH LOGIC */}
+            {user ? (
+              <>
+                {/* PROFILE */}
+                <div
+                  onClick={() => setProfileOpen(!profileOpen)}
+                  className="flex items-center space-x-3 cursor-pointer hover:bg-[#2a2a2a] px-2 py-1 rounded-lg transition"
+                >
+                  <img
+                    src="https://i.pravatar.cc/40"
+                    alt="profile"
+                    className="w-8 h-8 rounded-full border border-gray-600"
+                  />
+                  <span className="text-sm font-medium">{user.name}</span>
+                </div>
 
-      {/* DROPDOWN */}
-      {profileOpen && (
-        <div className="absolute right-0 top-12 bg-[#2a2a2a] rounded-xl shadow-lg w-48 py-2 border border-gray-700">
+                {/* DROPDOWN */}
+                {profileOpen && (
+                  <div className="absolute right-0 top-12 bg-[#2a2a2a] rounded-xl shadow-lg w-48 py-2 border border-gray-700">
 
-          <div className="px-4 py-2 border-b border-gray-700">
-            <p className="text-sm font-medium">{user.name}</p>
-            <p className="text-xs text-gray-400">{user.email}</p>
+                    <div className="px-4 py-2 border-b border-gray-700">
+                      <p className="text-sm font-medium">{user.name}</p>
+                      <p className="text-xs text-gray-400">{user.email}</p>
+                    </div>
+
+                    <Link className="block px-4 py-2 hover:bg-gray-700 text-sm">
+                      Profile
+                    </Link>
+
+                    <Link className="block px-4 py-2 hover:bg-gray-700 text-sm">
+                      My Progress
+                    </Link>
+
+                    <div className="border-t border-gray-700 my-1"></div>
+
+                    <button
+                      onClick={logoutUser}
+                      className="w-full text-left px-4 py-2 hover:bg-gray-700 text-sm text-red-400"
+                    >
+                      Logout
+                    </button>
+                  </div>
+                )}
+              </>
+            ) : (
+              // 🔥 NOT LOGGED IN
+              <Link
+                to="/login"
+                className="bg-yellow-400 text-black px-4 py-1 rounded-lg text-sm font-medium hover:bg-yellow-300 transition"
+              >
+                Login
+              </Link>
+            )}
           </div>
-
-          <Link className="block px-4 py-2 hover:bg-gray-700 text-sm">
-            Profile
-          </Link>
-
-          <Link className="block px-4 py-2 hover:bg-gray-700 text-sm">
-            My Progress
-          </Link>
-
-          <div className="border-t border-gray-700 my-1"></div>
-
-          <button
-            onClick={logoutUser}
-            className="w-full text-left px-4 py-2 hover:bg-gray-700 text-sm text-red-400"
-          >
-            Logout
-          </button>
-        </div>
-      )}
-    </>
-  ) : (
-    // 🔥 NOT LOGGED IN
-    <Link
-      to="/login"
-      className="bg-yellow-400 text-black px-4 py-1 rounded-lg text-sm font-medium hover:bg-yellow-300 transition"
-    >
-      Login
-    </Link>
-  )}
-</div>
 
           {/* MOBILE BUTTON */}
           <button

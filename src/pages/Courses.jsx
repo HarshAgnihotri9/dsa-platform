@@ -5,7 +5,7 @@ export default function Courses() {
   const navigate = useNavigate();
 
   return (
-    <div className="bg-[#0f0f0f] text-white  p-6 mt-20">
+    <div className="bg-[#0f0f0f] text-white  p-6 pt-20">
 
       <h1 className="text-2xl font-bold mb-6">Courses</h1>
 

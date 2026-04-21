@@ -9,6 +9,7 @@ import CreateProblem from "./pages/CreateProblem";
 import ProtectedRoute from "./utils/ProtectedRoute";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
+import Footer from "./components/Footer";
 
 function App() {
   return (
@@ -21,12 +22,13 @@ function App() {
         <Route path="/topics" element={<Topics />} />
         <Route path="/topics/:topicId" element={<ProblemList />} />
         <Route path="/problem/:problemId" element={<ProblemDetail />} />
-        <Route path="/dashboard" element={   <ProtectedRoute>
-      <Dashboard />
-    </ProtectedRoute>} />
+        <Route path="/dashboard" element={<ProtectedRoute>
+          <Dashboard />
+        </ProtectedRoute>} />
         <Route path="/create-problem" element={<CreateProblem />} />
 
       </Routes>
+      <Footer/>
     </Router>
   );
 }

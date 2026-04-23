@@ -1,39 +1,58 @@
 import { Link } from "react-router-dom";
+import { motion } from "framer-motion";
 
 export default function TopicCard({ topic }) {
   return (
     <Link to={`/topics/${topic.id}`}>
-      <div className="relative bg-[#1a1a1a] rounded-2xl p-6 border border-gray-800 hover:border-yellow-400 transition duration-300 cursor-pointer overflow-hidden group">
+      <motion.div
+        whileHover={{ y: -6, scale: 1.02 }}
+        transition={{ duration: 0.25 }}
+        className="relative rounded-2xl p-[1px] bg-gradient-to-br from-yellow-400/30 via-transparent to-yellow-400/20 group"
+      >
+        <div className="relative bg-[#111] backdrop-blur-xl rounded-2xl p-6 border border-white/5 overflow-hidden">
 
-        {/* Glow Effect */}
-        <div className="absolute inset-0 bg-gradient-to-br from-yellow-400/10 to-transparent opacity-0 group-hover:opacity-100 transition"></div>
+          {/* Glow effect */}
+          <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition duration-300 bg-gradient-to-br from-yellow-400/10 via-transparent to-transparent"></div>
 
-        {/* Content */}
-        <div className="relative z-10">
+          {/* Content */}
+          <div className="relative z-10">
 
-          {/* Title */}
-          <h2 className="text-xl font-semibold mb-2">
-            {topic.name}
-          </h2>
-
-          {/* Description */}
-          <p className="text-gray-400 text-sm">
-            Solve curated problems and build strong intuition.
-          </p>
-
-          {/* Footer */}
-          <div className="mt-6 flex justify-between items-center">
-            <span className="text-yellow-400 text-sm font-medium group-hover:translate-x-1 transition">
-              Start →
-            </span>
-
-            <div className="w-8 h-8 rounded-full bg-yellow-400/20 flex items-center justify-center text-yellow-400">
-              →
+            {/* Header */}
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-10 h-10 flex items-center justify-center rounded-xl bg-yellow-400/10 text-yellow-400 text-lg">
+                📚
+              </div>
+              <h2 className="text-lg font-semibold tracking-wide">
+                {topic.name}
+              </h2>
             </div>
-          </div>
 
+            {/* Description */}
+            <p className="text-gray-400 text-sm leading-relaxed">
+              Master concepts with curated problems and real-world patterns.
+            </p>
+
+            {/* Stats (important for your platform) */}
+            <div className="flex gap-4 mt-4 text-xs text-gray-500">
+              <span>🔥 {topic.problems || 20}+ Problems</span>
+              <span>⚡ {topic.level || "Beginner"}</span>
+            </div>
+
+            {/* Footer */}
+            <div className="mt-6 flex justify-between items-center">
+              <span className="text-yellow-400 text-sm font-medium flex items-center gap-1 group-hover:gap-2 transition-all">
+                Start Solving
+                <span>→</span>
+              </span>
+
+              <div className="w-9 h-9 rounded-full bg-yellow-400/10 flex items-center justify-center text-yellow-400 group-hover:bg-yellow-400 group-hover:text-black transition">
+                →
+              </div>
+            </div>
+
+          </div>
         </div>
-      </div>
+      </motion.div>
     </Link>
   );
 }

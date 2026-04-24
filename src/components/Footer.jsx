@@ -20,7 +20,7 @@ const Footer = () => {
             <a href="#" className="hover:text-white hover:scale-110 transition">
               <FaGithub />
             </a>
-            <a href="#" className="hover:text-blue-500 hover:scale-110 transition">
+            <a href="#" className="hover:text-yellow-500 hover:scale-110 transition">
               <FaLinkedin />
             </a>
             <a href="#" className="hover:text-sky-400 hover:scale-110 transition">
@@ -78,7 +78,7 @@ const Footer = () => {
               placeholder="Enter email"
               className="bg-transparent px-3 py-2 text-sm outline-none w-full"
             />
-            <button className="bg-blue-600 px-4 py-2 text-sm text-white hover:bg-blue-700 transition">
+            <button className="bg-yellow-600 px-4 py-2 text-sm text-white hover:bg-yellow-700 transition">
               Subscribe
             </button>
           </div>

@@ -17,15 +17,15 @@ function App() {
       <Navbar />
       <Routes>
         <Route path="/" element={<Home />} />
+        <Route path="/create-problem" element={<CreateProblem />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Register />} />
         <Route path="/topics" element={<Topics />} />
-        <Route path="/topics/:topicId" element={<ProblemList />} />
-        <Route path="/problem/:problemId" element={<ProblemDetail />} />
         <Route path="/dashboard" element={<ProtectedRoute>
           <Dashboard />
         </ProtectedRoute>} />
-        <Route path="/create-problem" element={<CreateProblem />} />
+        <Route path="/topics/:topicId" element={<ProtectedRoute><ProblemList /> </ProtectedRoute>} />
+        <Route path="/problem/:problemId" element={ <ProtectedRoute><ProblemDetail /></ProtectedRoute>} />
 
       </Routes>
       <Footer/>

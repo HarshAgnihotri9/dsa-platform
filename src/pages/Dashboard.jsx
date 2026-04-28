@@ -17,6 +17,11 @@ export default function Dashboard() {
         });
 
         const json = await res.json();
+         if (res.status === 401) {
+        localStorage.removeItem("token");
+        navigate("/login");
+        return;
+      }
 
         if (!json.success) {
           setError("Failed to load dashboard");
